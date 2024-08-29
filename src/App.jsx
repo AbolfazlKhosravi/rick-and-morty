@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import CharacterDetail from "./components/CharacterDetail";
 import CharacterList from "./components/CharacterList";
-import Navbar, { Search, SearchResult } from "./components/Navbar";
+import Navbar, { Favourites, Search, SearchResult } from "./components/Navbar";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 // import { allCharacters } from "../data/data";
@@ -12,7 +12,10 @@ function App() {
   const [isloading, setIsloading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectId, setSelectId] = useState();
+  const [favourites,setFavourites]=useState([])
   
+
+  const isAddedToFavourites=favourites.map(fav=>fav.id).includes(selectId)
   useEffect(() => {
     async function fetchdata() {
       try {
@@ -39,10 +42,11 @@ function App() {
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfCharacters={characters ? characters.length : 0} />
+        <Favourites numOfFavourites={favourites.length}/>
       </Navbar>
       <Main>
         <CharacterList characters={characters} isloading={isloading} setSelectId={setSelectId} selectId={selectId} />
-        <CharacterDetail selectId={selectId}  />
+        <CharacterDetail selectId={selectId} setFavourites={setFavourites} isAddedToFavourites={isAddedToFavourites}/>
       </Main>
       <Toaster />
     </div>

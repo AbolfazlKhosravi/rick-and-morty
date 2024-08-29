@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import Loader from "./Loader";
 
-function CharacterDetail({ selectId }) {
+function CharacterDetail({ selectId, setFavourites, isAddedToFavourites }) {
   const [character, setCharacter] = useState(null);
   const [isloading, setIsloading] = useState(false);
   const [episodes, setEpisodes] = useState(null);
@@ -38,7 +38,7 @@ function CharacterDetail({ selectId }) {
         const { data: episodes } = await axios.get(
           `https://rickandmortyapi.com/api/episode/${episodeId}`
         );
-        setEpisodes([episodes].flat(Infinity).slice(0,5));
+        setEpisodes([episodes].flat(Infinity).slice(0, 5));
       } catch (error) {
         console.log(error.response);
 
@@ -81,7 +81,18 @@ function CharacterDetail({ selectId }) {
                 <p>{character.location.name}</p>
               </div>
               <div className="actions">
-                <button className="btn btn--primary">Add to Favourits</button>
+                {isAddedToFavourites ? (
+                  <p>already Added To The Favourites ✅</p>
+                ) : (
+                  <button
+                    onClick={() =>
+                      setFavourites((prevData) => [...prevData, character])
+                    }
+                    className="btn btn--primary"
+                  >
+                    Add to Favourits
+                  </button>
+                )}
               </div>
             </div>
           </div>
