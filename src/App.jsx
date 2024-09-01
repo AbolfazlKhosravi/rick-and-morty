@@ -8,15 +8,18 @@ import axios from "axios";
 // import { allCharacters } from "../data/data";
 
 function App() {
-  const [characters, setChatacters] = useState([]);
+  const [characters, setCharacters] = useState([]);
   const [isloading, setIsloading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectId, setSelectId] = useState();
-  const [favourites, setFavourites] = useState([]);
+  const [favourites, setFavourites] = useState(
+    () => JSON.parse(localStorage.getItem("FAVOURITES")) || []
+  );
 
   const isAddedToFavourites = favourites
     .map((fav) => fav.id)
     .includes(selectId);
+
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -29,7 +32,7 @@ function App() {
           { signal }
         );
 
-        setChatacters(data.results.slice(0, 4));
+        setCharacters(data.results.slice(0, 4));
       } catch (error) {
         if (!axios.isCancel()) {
           if (
@@ -38,7 +41,7 @@ function App() {
             error.response.data.error
           ) {
             toast.error(error.response.data.error);
-            setChatacters([]);
+            setCharacters([]);
           }
         }
       } finally {
@@ -46,18 +49,22 @@ function App() {
       }
     }
     // if (query.length < 3) {
-    //   setChatacters([]);
+    //   setCharacters([]);
     //   return;
     // }
     fetchdata();
     return () => controller.abort();
   }, [query]);
+
+  useEffect(() => {
+    localStorage.setItem("FAVOURITES", JSON.stringify(favourites));
+  }, [favourites]);
   return (
     <div className="app">
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfCharacters={characters ? characters.length : 0} />
-        <Favourites numOfFavourites={favourites.length} />
+        <Favourites favourites={favourites} setFavourites={setFavourites} />
       </Navbar>
       <Main>
         <CharacterList

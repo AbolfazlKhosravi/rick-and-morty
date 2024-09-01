@@ -1,14 +1,29 @@
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Loader from "./Loader";
 
-function CharacterList({ characters, isloading, setSelectId ,selectId }) {
+function CharacterList({ characters, isloading, setSelectId, selectId }) {
   return (
     <div className="characters-list">
       {isloading ? (
         <Loader />
       ) : characters.length ? (
         characters.map((item) => (
-          <Character key={item.id} item={item} setSelectId={setSelectId} selectId={selectId}/>
+          <Character key={item.id} item={item}>
+            <button
+              onClick={() =>
+                setSelectId((prevId) => {
+                  return item.id === prevId ? null : item.id;
+                })
+              }
+              className="icon red"
+            >
+              {selectId === item.id ? (
+                <EyeSlashIcon />
+              ) : (
+                <EyeIcon className="icon" />
+              )}
+            </button>
+          </Character>
         ))
       ) : (
         <div
@@ -27,7 +42,7 @@ function CharacterList({ characters, isloading, setSelectId ,selectId }) {
     </div>
   );
 }
-const Character = ({ item, setSelectId ,selectId}) => {
+export const Character = ({ item, children }) => {
   return (
     <div className="list__item">
       <img src={item.image} alt={item.name} />
@@ -42,16 +57,7 @@ const Character = ({ item, setSelectId ,selectId}) => {
         <span>{item.status}</span>
         <span>-{item.species}</span>
       </div>
-      <button
-        onClick={() =>
-          setSelectId((prevId) => {
-            return item.id === prevId ? null : item.id;
-          })
-        }
-        className="icon red"
-      >
-        {selectId===item.id? <EyeSlashIcon/> : <EyeIcon className="icon" />}
-      </button>
+      {children}
     </div>
   );
 };

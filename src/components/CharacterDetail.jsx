@@ -155,7 +155,10 @@ const CharacterEpisodes = ({ character }) => {
       <div className="title">
         <h2>List of Episodes:</h2>
         <button onClick={() => setSortByEpisodes((epi) => !epi)}>
-          <ArrowUpCircleIcon className="icon" style={{rotate:sortByEpisodes?"0deg":"180deg"}}/>
+          <ArrowUpCircleIcon
+            className="icon"
+            style={{ rotate: sortByEpisodes ? "0deg" : "180deg" }}
+          />
         </button>
       </div>
       <ul>
