@@ -114,6 +114,7 @@ const CharacterSubInfo = ({
 const CharacterEpisodes = ({ character }) => {
   const [episodes, setEpisodes] = useState(null);
   const [isloadingEpisodes, setIsloadingEpisodes] = useState(false);
+  const [sortByEpisodes, setSortByEpisodes] = useState(true);
   useEffect(() => {
     async function getEpisodes() {
       try {
@@ -135,19 +136,33 @@ const CharacterEpisodes = ({ character }) => {
       getEpisodes();
     }
   }, [character]);
+
+  let sortEpisode = [];
+
+  if (sortByEpisodes && episodes) {
+    sortEpisode = [...episodes].sort(
+      (a, b) => new Date(a.created) - new Date(b.created)
+    );
+  }
+  if (!sortByEpisodes && episodes) {
+    sortEpisode = [...episodes].sort(
+      (a, b) => new Date(b.created) - new Date(a.created)
+    );
+  }
+
   return (
     <div className="character-episodes">
       <div className="title">
         <h2>List of Episodes:</h2>
-        <button>
-          <ArrowUpCircleIcon className="icon" />
+        <button onClick={() => setSortByEpisodes((epi) => !epi)}>
+          <ArrowUpCircleIcon className="icon" style={{rotate:sortByEpisodes?"0deg":"180deg"}}/>
         </button>
       </div>
       <ul>
         {isloadingEpisodes ? (
           <Loader />
         ) : episodes ? (
-          episodes.map((item, index) => (
+          sortEpisode.map((item, index) => (
             <li key={item.id}>
               <div>
                 {String(index + 1).padStart(2, "0")} {item.episode} :{" "}
